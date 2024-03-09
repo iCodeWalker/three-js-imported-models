@@ -5,6 +5,9 @@ import * as dat from "lil-gui";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
+// To load animations of gltf models, we need to create 'AnimationMixer'
+// 'AnimationMixer' is like a player
+
 // draco path : 'node_modules/three/examples/jsm/libs/draco'
 
 /**
@@ -31,28 +34,28 @@ gltfLoader.setDRACOLoader(dracoLoader);
 
 // use the load() method.
 // ########### DUCK Model #############
-gltfLoader.load(
-  // "/models/Duck/glTF/Duck.gltf",
-  // "/models/Duck/glTF-Binary/Duck.glb",
-  // "/models/Duck/glTF-Embedded/Duck.gltf",
-  "/models/Duck/glTF-Draco/Duck.gltf",
-  (gltf) => {
-    console.log("success");
-    console.log(gltf);
-    // the 'scene' property inside the 'gltf' contains everything we need.
+// gltfLoader.load(
+//   // "/models/Duck/glTF/Duck.gltf",
+//   // "/models/Duck/glTF-Binary/Duck.glb",
+//   // "/models/Duck/glTF-Embedded/Duck.gltf",
+//   "/models/Duck/glTF-Draco/Duck.gltf",
+//   (gltf) => {
+//     console.log("success");
+//     console.log(gltf);
+//     // the 'scene' property inside the 'gltf' contains everything we need.
 
-    // 1. Add the Object3D to our scene and ignore the unused PerspectiveCamera
-    scene.add(gltf.scene.children[0]);
-  },
-  (progress) => {
-    console.log("progress");
-    console.log(progress);
-  },
-  (error) => {
-    console.log("error");
-    console.log(error);
-  }
-);
+//     // 1. Add the Object3D to our scene and ignore the unused PerspectiveCamera
+//     scene.add(gltf.scene.children[0]);
+//   },
+//   (progress) => {
+//     console.log("progress");
+//     console.log(progress);
+//   },
+//   (error) => {
+//     console.log("error");
+//     console.log(error);
+//   }
+// );
 
 // ########### Flight Helmet Model #############
 // gltfLoader.load(
@@ -97,6 +100,37 @@ gltfLoader.load(
 //     console.log(error);
 //   }
 // );
+
+// ########### FOX Model #############
+let mixer = null;
+gltfLoader.load(
+  // "/models/Duck/glTF/Duck.gltf",
+  // "/models/Duck/glTF-Binary/Duck.glb",
+  // "/models/Duck/glTF-Embedded/Duck.gltf",
+  "/models/Fox/glTF/Fox.gltf",
+  (gltf) => {
+    console.log("success");
+    console.log(gltf);
+
+    mixer = new THREE.AnimationMixer(gltf.scene);
+
+    // Now add one 'AnimationClips' to the mixer with the clipAction(...) method
+    const action = mixer.clipAction(gltf.animations[0]);
+
+    action.play();
+
+    gltf.scene.scale.set(0.025, 0.025, 0.025);
+    scene.add(gltf.scene);
+  },
+  (progress) => {
+    console.log("progress");
+    console.log(progress);
+  },
+  (error) => {
+    console.log("error");
+    console.log(error);
+  }
+);
 
 /**
  * Floor
@@ -191,6 +225,11 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
+
+  // Update Mixer
+  if (mixer != null) {
+    mixer.update(deltaTime);
+  }
 
   // Update controls
   controls.update();
