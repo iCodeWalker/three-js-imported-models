@@ -3,6 +3,9 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+
+// draco path : 'node_modules/three/examples/jsm/libs/draco'
 
 /**
  * Base
@@ -17,65 +20,29 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 // instantiate the GLTF loader
+
+const dracoLoader = new DRACOLoader();
+// set decoder path for the geometry containing files
+dracoLoader.setDecoderPath("/draco/");
+
 const gltfLoader = new GLTFLoader();
+// We need to provide a "DRACOLoader" instance to our "GLTFLoader"
+gltfLoader.setDRACOLoader(dracoLoader);
 
 // use the load() method.
-// ########### DUCK Model #############
-// gltfLoader.load(
-//   // "/models/Duck/glTF/Duck.gltf",
-//   // "/models/Duck/glTF-Binary/Duck.glb",
-//   "/models/Duck/glTF-Embedded/Duck.gltf",
-//   (gltf) => {
-//     console.log("success");
-//     console.log(gltf);
-//     // the 'scene' property inside the 'gltf' contains everything we need.
-
-//     // 1. Add the Object3D to our scene and ignore the unused PerspectiveCamera
-//     scene.add(gltf.scene.children[0]);
-//   },
-//   (progress) => {
-//     console.log("progress");
-//     console.log(progress);
-//   },
-//   (error) => {
-//     console.log("error");
-//     console.log(error);
-//   }
-// );
-
 // ########### DUCK Model #############
 gltfLoader.load(
   // "/models/Duck/glTF/Duck.gltf",
   // "/models/Duck/glTF-Binary/Duck.glb",
-  "/models/FlightHelmet/glTF/FlightHelmet.gltf",
+  // "/models/Duck/glTF-Embedded/Duck.gltf",
+  "/models/Duck/glTF-Draco/Duck.gltf",
   (gltf) => {
     console.log("success");
     console.log(gltf);
     // the 'scene' property inside the 'gltf' contains everything we need.
 
     // 1. Add the Object3D to our scene and ignore the unused PerspectiveCamera
-    // scene.add(gltf.scene.children[0]); //We only get few parts because there are multiple children
-
-    // We can loop on the children and add them to the scene
-    // As this puts the children from one scene to our scene, we can get glitches and some children removed
-    // from the scene. To overcome this we use while loop
-    // for (const child of gltf.scene.children) {
-    //   scene.add(child);
-    // }
-
-    // while (gltf.scene.children.length) {
-    //   scene.add(gltf.scene.children[0]);
-    // }
-
-    // Another solution is to duplicate the children array in order to have an unaltered independent array.
-    // const children = [...gltf.scene.children];
-    // for (const child of children) {
-    //   scene.add(child);
-    // }
-
-    // An even more simplier solution is to add "scene" property
-    // When we need to add whole model
-    scene.add(gltf.scene);
+    scene.add(gltf.scene.children[0]);
   },
   (progress) => {
     console.log("progress");
@@ -86,6 +53,50 @@ gltfLoader.load(
     console.log(error);
   }
 );
+
+// ########### Flight Helmet Model #############
+// gltfLoader.load(
+//   // "/models/Duck/glTF/Duck.gltf",
+//   // "/models/Duck/glTF-Binary/Duck.glb",
+//   "/models/FlightHelmet/glTF/FlightHelmet.gltf",
+//   (gltf) => {
+//     console.log("success");
+//     console.log(gltf);
+//     // the 'scene' property inside the 'gltf' contains everything we need.
+
+//     // 1. Add the Object3D to our scene and ignore the unused PerspectiveCamera
+//     // scene.add(gltf.scene.children[0]); //We only get few parts because there are multiple children
+
+//     // We can loop on the children and add them to the scene
+//     // As this puts the children from one scene to our scene, we can get glitches and some children removed
+//     // from the scene. To overcome this we use while loop
+//     // for (const child of gltf.scene.children) {
+//     //   scene.add(child);
+//     // }
+
+//     // while (gltf.scene.children.length) {
+//     //   scene.add(gltf.scene.children[0]);
+//     // }
+
+//     // Another solution is to duplicate the children array in order to have an unaltered independent array.
+//     // const children = [...gltf.scene.children];
+//     // for (const child of children) {
+//     //   scene.add(child);
+//     // }
+
+//     // An even more simplier solution is to add "scene" property
+//     // When we need to add whole model
+//     scene.add(gltf.scene);
+//   },
+//   (progress) => {
+//     console.log("progress");
+//     console.log(progress);
+//   },
+//   (error) => {
+//     console.log("error");
+//     console.log(error);
+//   }
+// );
 
 /**
  * Floor
